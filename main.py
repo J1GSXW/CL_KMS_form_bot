@@ -8,6 +8,8 @@ from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.types import ParseMode
 from aiogram.types.message import ContentType
 from aiogram.utils import executor
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
+import emoji
 
 logging.basicConfig(level=logging.INFO)
 
@@ -51,6 +53,9 @@ class Form(StatesGroup):
     why_you = State()
     theft = State()
     two_employers = State()
+@dp.message_handler(commands='help')
+async def help_cmd_handler(message: types.Message):
+    await message.reply("Привет, это бот-анкета для трудоустройства в  Coffee Like KMS, если у тебя возникли вопросы напиши их ответом на это сообщение, они обязательно будут переданы администратору")
 
 # Функция для начала анкеты
 @dp.message_handler(commands='start')
@@ -59,11 +64,10 @@ async def start_cmd_handler(message: types.Message):
     Хэндлер для команды /start
     """
     # Удаляем предыдущую клавиатуру (если была)
-    await message.reply('Добрый день! Для начала анкеты нажмите "Начать"', 
+    await Form.name.set()
+    await message.reply("Привет, это анкета в Coffee Like KMS Чтобы попасть в нашу команду, тебе нужно максимально подробно и честно ответить на все вопросы и выполнить задания. Прояви смекалку!\n Для начала введи своё имя и фамилию: ", 
                         reply_markup=types.ReplyKeyboardRemove())
     # Предлагаем начать анкету
-    await Form.name.set()
-    await message.reply("Введите ваше имя и фамилию:")
 
 # Функции для обработки ответов на вопросы анкеты
 @dp.message_handler(state=Form.name)
@@ -72,7 +76,7 @@ async def process_name(message: types.Message, state: FSMContext):
         data['name'] = message.text
 
     await Form.next()
-    await message.reply("Введите дату рождения в формате ДД.ММ.ГГГГ:")
+    await message.reply("Введи дату рождения в формате ДД.ММ.ГГГГ: ")
 
 @dp.message_handler(state=Form.birth_date)
 async def process_birth_date(message: types.Message, state: FSMContext):
@@ -80,7 +84,7 @@ async def process_birth_date(message: types.Message, state: FSMContext):
         data['birth_date'] = message.text
 
     await Form.next()
-    await message.reply("Введите контактный номер телефона:")
+    await message.reply("Введи контактный номер телефона: ")
 
 @dp.message_handler(state=Form.phone_number)
 async def process_phone_number(message: types.Message, state: FSMContext):
@@ -88,7 +92,7 @@ async def process_phone_number(message: types.Message, state: FSMContext):
         data['phone_number'] = message.text
 
     await Form.next()
-    await message.reply("Введите адрес электронной почты:")
+    await message.reply("Введи адрес электронной почты: ")
 
 @dp.message_handler(state=Form.email)
 async def process_email(message: types.Message, state: FSMContext):
@@ -96,18 +100,20 @@ async def process_email(message: types.Message, state: FSMContext):
         data['email'] = message.text
 
     await Form.next()
-    await message.reply("Введите ссылки на страницу в ВК, Instagram, Telegram (мы просто хотим поставить лайк):")
+    await message.reply("Введи ссылку на страницу в ВК, Instagram, Telegram (мы просто хотим поставить 👍):")
 
 @dp.message_handler(state=Form.social_links)
 async def process_social_links(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['social_links'] = message.text
 
+    # Создаем объект ReplyKeyboardMarkup и добавляем кнопки
+    markup = ReplyKeyboardMarkup(resize_keyboard=True)
+    markup.add(KeyboardButton("Учусь очно"), KeyboardButton("Учусь заочно"), KeyboardButton("Закончил/Не учусь"))
+
     await Form.next()
-    await message.reply("На момент заполнения анкеты ты:\n"
-                        "1. Учусь очно\n"
-                        "2. Учусь заочно\n"
-                        "3. Закончил/Не учусь")
+    await message.reply("На момент заполнения анкеты ты:", reply_markup=markup)
+
 
 @dp.message_handler(state=Form.education_status)
 async def process_current_status(message: types.Message, state: FSMContext):
@@ -115,31 +121,36 @@ async def process_current_status(message: types.Message, state: FSMContext):
         data['education_status'] = message.text
 
     await Form.next()
-    await message.reply("Напиши пожалуйста наименование учебного заведения, специальность и год выпуска.")
+    await message.reply("Напиши пожалуйста наименование учебного заведения, специальность и год выпуска.",
+                        reply_markup=types.ReplyKeyboardRemove())
 
 @dp.message_handler(state=Form.education_details)
 async def process_education_details(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['education_details'] = message.text
-
+    markup = ReplyKeyboardMarkup(resize_keyboard=True)
+    markup.add(KeyboardButton("Да"), KeyboardButton("Нет"))
     await Form.next()
-    await message.reply("Наличие трудовой книжки (Да/Нет):")
+    await message.reply("Наличие трудовой книжки: ", reply_markup=markup)
 
 @dp.message_handler(state=Form.has_work_book)
 async def process_work_book(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['has_work_book'] = message.text
-
+    markup = ReplyKeyboardMarkup(resize_keyboard=True)
+    markup.add(KeyboardButton("Да"), KeyboardButton("Нет"))
     await Form.next()
-    await message.reply("Наличие медицинской книжки (Да/Нет):")
+    await message.reply("Наличие медицинской книжки: ", reply_markup=markup)
 
 @dp.message_handler(state=Form.has_medical_book)
 async def process_medical_book(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['has_medical_book'] = message.text
+    markup = ReplyKeyboardMarkup(resize_keyboard=True)
+    markup.add(KeyboardButton("Да"), KeyboardButton("Нет"))
 
     await Form.next()
-    await message.reply("Являешься ли ты нашим гостем (Да/Нет):")
+    await message.reply("Являешься ли ты нашим гостем: ",reply_markup=markup)
 
 @dp.message_handler(state=Form.is_our_guest)
 async def process_is_guest(message: types.Message, state: FSMContext):
@@ -147,7 +158,8 @@ async def process_is_guest(message: types.Message, state: FSMContext):
         data['is_our_guest'] = message.text
 
     await Form.next()
-    await message.reply("Что для тебя важно при выборе работы?")
+    await message.reply("Что для тебя важно при выборе работы?",
+                        reply_markup=types.ReplyKeyboardRemove())
 
 @dp.message_handler(state=Form.user_link)
 async def start_command(message: types.Message, state: FSMContext):
@@ -185,17 +197,21 @@ async def process_dismissal_reason(message: types.Message, state: FSMContext):
 async def process_why_us(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['why_us'] = message.text
+    markup = ReplyKeyboardMarkup(resize_keyboard=True)
+    markup.add(KeyboardButton("Да"), KeyboardButton("Нет"), KeyboardButton("Возможно"), KeyboardButton("Другое(напиши текстом)"))
+    
 
     await Form.next()
-    await message.reply("Легко ли ты воспринимаешь новую информацию, быстрообучаем?(варианты ответа: Да, Нет, Возможно, Другое(введи текстом))")
+    await message.reply("Легко ли ты воспринимаешь новую информацию, быстрообучаем?",reply_markup=markup)
 
 @dp.message_handler(state=Form.quick_learning)
 async def process_quick_learning(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
-        data['quick_learning'] = message.text
+        data['quick_learning'] = message.text    
 
     await Form.next()
-    await message.reply("Какая твоя главная мечта?")
+    await message.reply("Какая твоя главная мечта?",
+                        reply_markup=types.ReplyKeyboardRemove())
 
 @dp.message_handler(state=Form.main_dream)
 async def process_main_dream(message: types.Message, state: FSMContext):
@@ -288,9 +304,17 @@ async def process_if_you_small(message: types.Message, state: FSMContext):
 async def process_remark(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['remark'] = message.text
-
+    
+    # Создаем список вариантов ответа
+    options = ["Предлагать и продвигать новые методы и решения", "Работать по инструкции/регламенту", "Другое (напиши текстом)"]
+    # Создаем клавиатуру, в которой кнопки будут подстраиваться под размер экрана
+    markup = ReplyKeyboardMarkup(resize_keyboard=True)
+    for option in options:
+        markup.add(KeyboardButton(option))
+    
     await Form.next()
-    await message.reply("Что тебе ближе?(варианты ответа: Предлагать и продвигать новые методы и решения, Работать по инструкции/регламенту, Другое(напиши текстом))")
+    await message.reply("Выберите вариант или введите свой ответ:", reply_markup=markup)
+
 
 
 @dp.message_handler(state=Form.what_closely)
@@ -299,7 +323,8 @@ async def process_what_closely(message: types.Message, state: FSMContext):
         data['what_closely'] = message.text
 
     await Form.next()
-    await message.reply("Ты приходишь домой, и видишь в своей морозилке пингвина. Твои действия?")
+    await message.reply("Ты приходишь домой, и видишь в своей морозилке пингвина. Твои действия?"
+                        ,reply_markup=types.ReplyKeyboardRemove())
 
 
 @dp.message_handler(state=Form.freeze_pinguin)
@@ -325,7 +350,7 @@ async def process_theft(message: types.Message, state: FSMContext):
         data['theft'] = message.text
 
     await Form.next()
-    await message.reply("Тебе предложили работу два работодателя. Как будещь выбирать?")
+    await message.reply("Тебе предложили работу два работодателя. Как будешь выбирать?")
 
 
 @dp.message_handler(state=Form.two_employers)
@@ -372,9 +397,7 @@ async def process_two_employers(message: types.Message, state: FSMContext):
         await bot.send_message(chat_id="-1001609605973", text=text)
         await state.finish()
 
-    await message.reply("Спасибо за заполнение анкеты!")
-
-
+    await message.reply("Спасибо, что заполнил анкету для устройства на работу в Coffee Like KMS, красавчик! Совсем скоро в твою дверь постучатся... А точнее, свяжутся с тобой в WhatsApp или позвонят, если анкета будет одобрена. Хорошего тебе дня и отличного настроения!")
 
 
 if __name__ == '__main__':
