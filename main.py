@@ -1,3 +1,8 @@
+import os
+from background import keep_alive #импорт функции для поддержки работоспособности
+import pip
+pip.main(['install', 'aiogram'])
+import time
 import logging
 
 from aiogram import Bot, Dispatcher, types
@@ -9,7 +14,7 @@ from aiogram.types import ParseMode
 from aiogram.types.message import ContentType
 from aiogram.utils import executor
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
-import emoji
+
 
 logging.basicConfig(level=logging.INFO)
 
@@ -24,23 +29,23 @@ class Form(StatesGroup):
     name = State()
     birth_date = State()
     phone_number = State()
-    email = State()
+    # email = State()
     social_links = State()
     education_status = State()
     education_details = State()
-    has_work_book = State()
-    has_medical_book = State()
+    # has_work_book = State()
+    # has_medical_book = State()
     is_our_guest = State()
     user_link = State()
     job_preferences = State()
     last_job = State()
     dismissal_reason = State()
     why_us = State()
-    quick_learning = State()
+    # quick_learning = State()
     main_dream = State()
     favorite_drink = State()
-    hobby = State()
-    achievment = State()
+    # hobby = State()
+    # achievment = State()
     new_acquaintances = State()
     emotions = State()
     work_schedule = State()
@@ -50,7 +55,7 @@ class Form(StatesGroup):
     remark = State()
     what_closely = State()
     freeze_pinguin = State()
-    why_you = State()
+    # why_you = State()
     theft = State()
     two_employers = State()
 @dp.message_handler(commands='help')
@@ -91,13 +96,13 @@ async def process_phone_number(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['phone_number'] = message.text
 
-    await Form.next()
-    await message.reply("Введи адрес электронной почты: ")
+#     await Form.next()
+#     await message.reply("Введи адрес электронной почты: ")
 
-@dp.message_handler(state=Form.email)
-async def process_email(message: types.Message, state: FSMContext):
-    async with state.proxy() as data:
-        data['email'] = message.text
+# @dp.message_handler(state=Form.email)
+# async def process_email(message: types.Message, state: FSMContext):
+#     async with state.proxy() as data:
+#         data['email'] = message.text
 
     await Form.next()
     await message.reply("Введи ссылку на страницу в ВК, Instagram, Telegram (мы просто хотим поставить 👍):")
@@ -130,24 +135,24 @@ async def process_education_details(message: types.Message, state: FSMContext):
         data['education_details'] = message.text
     markup = ReplyKeyboardMarkup(resize_keyboard=True)
     markup.add(KeyboardButton("Да"), KeyboardButton("Нет"))
-    await Form.next()
-    await message.reply("Наличие трудовой книжки: ", reply_markup=markup)
+#     await Form.next()
+#     await message.reply("Наличие трудовой книжки: ", reply_markup=markup)
 
-@dp.message_handler(state=Form.has_work_book)
-async def process_work_book(message: types.Message, state: FSMContext):
-    async with state.proxy() as data:
-        data['has_work_book'] = message.text
-    markup = ReplyKeyboardMarkup(resize_keyboard=True)
-    markup.add(KeyboardButton("Да"), KeyboardButton("Нет"))
-    await Form.next()
-    await message.reply("Наличие медицинской книжки: ", reply_markup=markup)
+# @dp.message_handler(state=Form.has_work_book)
+# async def process_work_book(message: types.Message, state: FSMContext):
+#     async with state.proxy() as data:
+#         data['has_work_book'] = message.text
+#     markup = ReplyKeyboardMarkup(resize_keyboard=True)
+#     markup.add(KeyboardButton("Да"), KeyboardButton("Нет"))
+#     await Form.next()
+#     await message.reply("Наличие медицинской книжки: ", reply_markup=markup)
 
-@dp.message_handler(state=Form.has_medical_book)
-async def process_medical_book(message: types.Message, state: FSMContext):
-    async with state.proxy() as data:
-        data['has_medical_book'] = message.text
-    markup = ReplyKeyboardMarkup(resize_keyboard=True)
-    markup.add(KeyboardButton("Да"), KeyboardButton("Нет"))
+# @dp.message_handler(state=Form.has_medical_book)
+# async def process_medical_book(message: types.Message, state: FSMContext):
+#     async with state.proxy() as data:
+#         data['has_medical_book'] = message.text
+#     markup = ReplyKeyboardMarkup(resize_keyboard=True)
+#     markup.add(KeyboardButton("Да"), KeyboardButton("Нет"))
 
     await Form.next()
     await message.reply("Являешься ли ты нашим гостем: ",reply_markup=markup)
@@ -197,17 +202,17 @@ async def process_dismissal_reason(message: types.Message, state: FSMContext):
 async def process_why_us(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['why_us'] = message.text
-    markup = ReplyKeyboardMarkup(resize_keyboard=True)
-    markup.add(KeyboardButton("Да"), KeyboardButton("Нет"), KeyboardButton("Возможно"), KeyboardButton("Другое(напиши текстом)"))
+#     markup = ReplyKeyboardMarkup(resize_keyboard=True)
+#     markup.add(KeyboardButton("Да"), KeyboardButton("Нет"), KeyboardButton("Возможно"), KeyboardButton("Другое(напиши текстом)"))
     
 
-    await Form.next()
-    await message.reply("Легко ли ты воспринимаешь новую информацию, быстрообучаем?",reply_markup=markup)
+#     await Form.next()
+#     await message.reply("Легко ли ты воспринимаешь новую информацию, быстрообучаем?",reply_markup=markup)
 
-@dp.message_handler(state=Form.quick_learning)
-async def process_quick_learning(message: types.Message, state: FSMContext):
-    async with state.proxy() as data:
-        data['quick_learning'] = message.text    
+# @dp.message_handler(state=Form.quick_learning)
+# async def process_quick_learning(message: types.Message, state: FSMContext):
+#     async with state.proxy() as data:
+#         data['quick_learning'] = message.text    
 
     await Form.next()
     await message.reply("Какая твоя главная мечта?",
@@ -224,25 +229,25 @@ async def process_main_dream(message: types.Message, state: FSMContext):
 @dp.message_handler(state=Form.favorite_drink)
 async def process_favorite_drink(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
-        data['favotite_drink'] = message.text
+        data['favorite_drink'] = message.text
 
-    await Form.next()
-    await message.reply("Какое твоё увлечение, хобби?")
+#     await Form.next()
+#     await message.reply("Какое твоё увлечение, хобби?")
 
-@dp.message_handler(state=Form.hobby)
-async def process_hobby(message: types.Message, state: FSMContext):
-    async with state.proxy() as data:
-        data['hobby'] = message.text
+# @dp.message_handler(state=Form.hobby)
+# async def process_hobby(message: types.Message, state: FSMContext):
+#     async with state.proxy() as data:
+#         data['hobby'] = message.text
 
-    await Form.next()
-    await message.reply("Какими достижениями ты гордишься?")
+#     await Form.next()
+#     await message.reply("Какими достижениями ты гордишься?")
 
 
 
-@dp.message_handler(state=Form.achievment)
-async def process_achievment(message: types.Message, state: FSMContext):
-    async with state.proxy() as data:
-        data['achievment'] = message.text
+# @dp.message_handler(state=Form.achievment)
+# async def process_achievment(message: types.Message, state: FSMContext):
+#     async with state.proxy() as data:
+#         data['achievment'] = message.text
 
     await Form.next()
     await message.reply("Ты легко находишь общий язык с людьми, заводишь новые знакомства?")
@@ -332,14 +337,14 @@ async def process_freeze_pinguin(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['freeze_pinguin'] = message.text
 
-    await Form.next()
-    await message.reply("Почему мы должны взять именно тебя?")
+#     await Form.next()
+#     await message.reply("Почему мы должны взять именно тебя?")
 
 
-@dp.message_handler(state=Form.why_you)
-async def process_why_you(message: types.Message, state: FSMContext):
-    async with state.proxy() as data:
-        data['why_you'] = message.text
+# @dp.message_handler(state=Form.why_you)
+# async def process_why_you(message: types.Message, state: FSMContext):
+#     async with state.proxy() as data:
+#         data['why_you'] = message.text
 
     await Form.next()
     await message.reply("Коллега украл/а имущество компании, ты — свидетель. Что будешь делать с этой информацией?")
@@ -364,22 +369,22 @@ async def process_two_employers(message: types.Message, state: FSMContext):
         text += f"Имя и фамилия: {data.get('name')}\n \n"
         text += f"Дата рождения: {data.get('birth_date')}\n \n"
         text += f"Контактный номер телефона: {data.get('phone_number')}\n \n"
-        text += f"Адрес электронной почты: {data.get('email')}\n \n"
+        # text += f"Адрес электронной почты: {data.get('email')}\n \n"
         text += f"Ссылки на социальные сети: {data.get('social_links')}\n \n"
         text += f"На момент заполнения анкеты ты: {data.get('education_status')}\n \n"
         text += f"Учебное заведение: {data.get('education_details')}\n \n"
-        text += f"Трудовая книжка: {data.get('has_work_book')}\n \n"
-        text += f"Медицинская книжка: {data.get('has_medical_book')}\n \n"
+        # text += f"Трудовая книжка: {data.get('has_work_book')}\n \n"
+        # text += f"Медицинская книжка: {data.get('has_medical_book')}\n \n"
         text += f"Наш гость: {data.get('is_our_guest')}\n \n"
         text += f"Приоритеты в работе: {data.get('job_preferences')}\n \n"
         text += f"Предыдущее место работы: {data.get('last_job')}\n \n"
         text += f"Причина ухода: {data.get('dismissal_reason')}\n \n"
         text += f"Почему хочешь работать с кофе и у нас: {data.get('why_us')}\n \n"
-        text += f"Быстрообучаемость: {data.get('quick_learning')}\n \n"
+        # text += f"Быстрообучаемость: {data.get('quick_learning')}\n \n"
         text += f"Главная мечта: {data.get('main_dream')}\n \n"
         text += f"Любимый напиток: {data.get('favorite_drink')}\n \n"
-        text += f"Хобби: {data.get('hobby')}\n \n"
-        text += f"Достижения: {data.get('achievment')}\n \n"
+        # text += f"Хобби: {data.get('hobby')}\n \n"
+        # text += f"Достижения: {data.get('achievment')}\n \n"
         text += f"Легко заводишь знакомства: {data.get('new_acquaintances')}\n \n"
         text += f"Сложно ли сдерживать эмоции: {data.get('emotions')}\n \n"
         text += f"График работы: {data.get('work_schedule')}\n \n"
@@ -389,7 +394,7 @@ async def process_two_employers(message: types.Message, state: FSMContext):
         text += f"Реакция на замечание коллеги: {data.get('remark')}\n \n"
         text += f"Что ближе: {data.get('what_closely')}\n \n"
         text += f"Пингвин в морозилке: {data.get('freeze_pinguin')}\n \n"
-        text += f"Почему должны взять именно тебя: {data.get('why_you')}\n \n"
+        # text += f"Почему должны взять именно тебя: {data.get('why_you')}\n \n"
         text += f"Коллега вор, ты свидетель, варианты: {data.get('theft')}\n \n"
         text += f"Предложили работу двое, как будешь выбирать: {data.get('two_employers')}\n \n"
 
@@ -397,12 +402,11 @@ async def process_two_employers(message: types.Message, state: FSMContext):
         await bot.send_message(chat_id="-1001609605973", text=text)
         await state.finish()
 
-    await message.reply("Спасибо, что заполнил анкету для устройства на работу в Coffee Like KMS, красавчик! Совсем скоро в твою дверь постучатся... А точнее, свяжутся с тобой в WhatsApp или позвонят, если анкета будет одобрена. Хорошего тебе дня и отличного настроения!")
+    await message.reply("Спасибо, что заполнил анкету для устройства на работу в Coffee Like KMS, красавчик! Совсем скоро в твою дверь постучатся... А точнее, свяжутся с тобой в WhatsApp, Telegram или позвонят, если анкета будет одобрена. Хорошего тебе дня и отличного настроения!")
 
-
+keep_alive()
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)
-
 
 
    
