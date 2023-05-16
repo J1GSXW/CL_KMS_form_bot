@@ -18,8 +18,8 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 
 logging.basicConfig(level=logging.INFO)
 
-TOKEN = '6070617064:AAEp2BEdWtlQYq6GsDNvAV7KPv8yRrhVCAs'
-CHAT_ID = '-1001609605973'
+TOKEN = 'YOU TOKEN'
+CHAT_ID = 'YOU CHAT ID'
 
 bot = Bot(token=TOKEN)
 dp = Dispatcher(bot, storage=MemoryStorage())
